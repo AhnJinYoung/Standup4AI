@@ -2,13 +2,14 @@ import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, Mxfp4Config
 from peft import LoraConfig, get_peft_model
 from trl import SFTConfig, SFTTrainer
+from datasets import load_dataset
 
 MODEL_ID = "openai/gpt-oss-20b"
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
 
 # MXFP4 → 학습 시 bf16으로 업캐스트
-quant = Mxfp4Config(dequantize=True)
+quant = Mxfp4Config(dequantize=False)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_ID,
     attn_implementation="eager",
@@ -46,11 +47,12 @@ train_args = SFTConfig(
     push_to_hub=True,  # 아래 push에서 모델 리포 id 지정
 )
 
+train_ds = load_dataset("parquet",data_files="prep_out/comedy_messages.parquet")["train"]
 # 위 전처리에서 만든 Dataset(컬럼: "messages")
 trainer = SFTTrainer(
     model=model,
     args=train_args,
-    train_dataset=dataset,
+    train_dataset=train_ds,
     processing_class=tokenizer,     # <-- Harmony 채팅 템플릿 자동 적용
 )
 
