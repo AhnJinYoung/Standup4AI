@@ -1,23 +1,15 @@
-# === Core HF stack ===
+# Core
+torch>=2.5.0
 transformers>=4.55.0
+accelerate>=0.34.2
+datasets>=2.21.0
 trl>=0.20.0
 peft>=0.17.0
-datasets>=2.20.0
-accelerate>=0.33.0
-huggingface_hub>=0.24.6
-tokenizers>=0.19.1
-safetensors>=0.4.4
-einops>=0.7.0
 
-# === Utilities / I/O ===
-tqdm>=4.66.0
-pyarrow>=14.0.2         # parquet 저장/로드
-pandas>=2.2.2
+# Quant & kernels
+triton>=3.4.0
 
-# === Optional but handy ===
-rich>=13.7.0            # 예쁜 로그
-evaluate>=0.4.2         # (선택) 간단 평가 지표
-wandb>=0.17.0           # (선택) 실험 로깅
+# Optional: 8-bit optimizer for smaller optimizer states
+bitsandbytes>=0.43.0
 
-# === 4bit/QLoRA 등 (선택) ===
-bitsandbytes>=0.43.1; platform_system != "Darwin"
+# (Do NOT pin flash-attn here; OSS attention for gpt-oss often prefers 'eager')
